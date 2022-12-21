@@ -25,6 +25,14 @@ public class PersonDatabaseManager implements DataManager {
 
     @Override
     public void Export(List list) {
+        try {
+            conn.createStatement().execute("CREATE TABLE IF NOT EXISTS`EMAIL` (\n" +
+                                           "	`Id`	INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                                           "	`Mail`	TEXT NOT NULL\n" +
+                                           ");");
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
     }
 
     @Override
