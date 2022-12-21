@@ -3,12 +3,15 @@ package database;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Person;
 
 public class PersonDatabaseManager implements DataManager {
@@ -24,14 +27,24 @@ public class PersonDatabaseManager implements DataManager {
     }
 
     @Override
-    public void Export(List list) {
+    public void Export(List<String> list,String table) {
         try {
-            conn.createStatement().execute("CREATE TABLE IF NOT EXISTS`EMAIL` (\n" +
+            conn.createStatement().execute("CREATE TABLE IF NOT EXISTS`"+table+"` (\n" +
                                            "	`Id`	INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                                            "	`Mail`	TEXT NOT NULL\n" +
                                            ");");
         } catch (SQLException e) {
             System.out.println(e);
+        }
+        
+        for(String str: list){
+            try {
+                PreparedStatement ps= conn.prepareStatement("INSERT INTO "+table+"(Mail) VALUES(?)");
+                ps.setString(1, str);
+                ps.executeUpdate();
+            } catch (SQLException ex) {
+                System.out.println(ex);
+            }
         }
     }
 
